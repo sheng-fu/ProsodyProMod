@@ -23,16 +23,17 @@ Implementation of the "Process all sounds without pause" option in the original 
 python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 -set_initial_normalized_time_to_0 0
 ```
 
-### Modifications from the original Praat script 
-+ An option to add annotations from other tiers to the following (series) of files (e.g., ```-other_tiers 2,3```)
+### Modifications 
++ Added an option to extract annotations from other tiers to the following (series) of files (e.g., ```-other_tiers 2,3```)
   + .actutimeX 
   + .normtimeX
   + .means (as .meansMoreTiers)
   + .BID
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
++ Means of voice measurements are calculated by ignoring undefined values
 
 ### Notes
-+ means of voice measurements are taken by ignoring undefined values
+
 + CPP measurements might differ from running the .Praat version (in .means, .meansMoreTiers, .normtimeVoice)
   + Issue with "Get peak prominence" on PowerCepstrum objects returning different results with Interpolation other than "none"
 
@@ -40,8 +41,10 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 
 ## Praat script version (_ProsodyProMod.praat)
 
+### Modifications 
+
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
-+ .BID files now also saved to the folder selected via Choose_working_folder
++ .BID files are saved to the selected folder when ```Choose_working_folder = 1```
 
 
 
