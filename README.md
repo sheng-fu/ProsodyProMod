@@ -2,7 +2,7 @@
 
 Modifications to ProsodyPro
 
-**See original script and descriptions at** 
+**Find the original script and descriptions at** 
 http://www.homepages.ucl.ac.uk/~uclyyix/ProsodyPro/
 
 **To cite the tool**:
@@ -24,7 +24,7 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 ```
 
 ### Modifications from the original Praat script 
-+ An option to add anntotation from other tiers to the following (series) of files (e.g., ```-other_tiers 2,3```)
++ An option to add annotations from other tiers to the following (series) of files (e.g., ```-other_tiers 2,3```)
   + .actutimeX 
   + .normtimeX
   + .means (as .meansMoreTiers)
