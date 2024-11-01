@@ -22,11 +22,15 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 + An option to add anntotation from other tiers to the following (series) of files (e.g., ```-other_tiers 2,3```)
   + .actutimeX 
   + .normtimeX
-  + .means
+  + .means (as .meansMoreTiers)
   + .BID
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
 + .BID files now also saved to the folder selected via Choose_working_folder
 
+### Notes
++ means of voice measurements are taken by ignoring undefined values
++ CPP measurements might differ from running the .Praat version (in .means, .meansMoreTiers, .normtimeVoice)
+  + Issue with "Get peak prominence" on PowerCepstrum objects returning different results with Interpolation other than "none"
 
 
 
@@ -34,3 +38,6 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
 + .BID files now also saved to the folder selected via Choose_working_folder
+
+
+

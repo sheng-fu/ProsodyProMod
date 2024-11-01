@@ -72,25 +72,25 @@ Sound_file_extension = args.Sound_file_extension
 min_f0 = args.min_f0
 max_f0 = args.max_f0
 
-npoints = args.npoints #10
-f0_sample_rate = args.f0_sample_rate #100
+npoints = args.npoints  
+f0_sample_rate = args.f0_sample_rate  
 
-get_BID_measures = args.get_BID_measures #True
-energy_band_size = args.energy_band_size #500
-energy_band_step_size = args.energy_band_step_size #250
-max_number_of_formants = args.max_number_of_formants #5
-maximum_formant = args.maximum_formant #5000
+get_BID_measures = args.get_BID_measures  
+energy_band_size = args.energy_band_size  
+energy_band_step_size = args.energy_band_step_size  
+max_number_of_formants = args.max_number_of_formants  
+maximum_formant = args.maximum_formant  
 
-silence_marker = args.silence_marker #""
-perturbation_length = args.perturbation_length #0
-final_offset = args.final_offset #-0.03
-smoothing_window_width = args.smoothing_window_width #0.07
-set_initial_normalized_time_to_0 = args.set_initial_normalized_time_to_0 #0
-capture_consonant_perturbation = args.capture_consonant_perturbation #0
+silence_marker = args.silence_marker  
+perturbation_length = args.perturbation_length  
+final_offset = args.final_offset 
+smoothing_window_width = args.smoothing_window_width  
+set_initial_normalized_time_to_0 = args.set_initial_normalized_time_to_0 
+capture_consonant_perturbation = args.capture_consonant_perturbation  
 
 other_tiers = args.other_tiers
 
-other_tiers = [int(x) for x in other_tiers.split(",") if x != 0]
+other_tiers = [int(x) for x in other_tiers.split(",") if x != ""]
 empty_intevals = ["", " ", "\n", "\t"]
 
 
@@ -193,7 +193,7 @@ def Normalize(Pitchtier_1, TableOfReal_1, TableOfReal_2, end, start1, interval, 
     colnames2 = {i+1:pm.praat.call(TableOfReal_2, "Get column label", i+1) for i in range(ncols)}                
 
     
-    #print(label)
+
     for x in range(0,npoints):
         normtime = start1 + duration * x / npoints
         if smoothing_window_width > 0:
@@ -368,7 +368,7 @@ def Trimf0(PitchTier_name, npulses):
 
 
 def Smooth(PitchTier_curve_in, width, sampleStart, sampleEnd):
-    PitchTier_curve_out = pm.praat.call("Create PitchTier", "curve_out", sampleStart, sampleEnd) #2024
+    PitchTier_curve_out = pm.praat.call("Create PitchTier", "curve_out", sampleStart, sampleEnd)  
     
     j = 1
     weight = {}
@@ -379,7 +379,7 @@ def Smooth(PitchTier_curve_in, width, sampleStart, sampleEnd):
         else:
             weight[j] = width - j + 1
 
-    smooth_end = pm.praat.call(PitchTier_curve_in, "Get number of points") #2035
+    smooth_end = pm.praat.call(PitchTier_curve_in, "Get number of points") 
     smooth_end += 1
    
     i = 1 
@@ -765,13 +765,13 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
             start1 = start + perturbation_length      
             end = pm.praat.call(TextGrid_name, "Get end point", target_tier, m)
             f0 = pm.praat.call(PitchTier_name, "Get value at time", normtime)
-            #print(f0, normtime)
+
             duration = end - start
             time_step = duration / (npoints - 1)
             if not intervals_found:
                 firstime = start1
                 intervals_found = 1
-            #print("voice", m)
+
             voice_dict['mean_h1_h2_'][m] = []
             voice_dict['mean_h1_H2_'][m] = []
             voice_dict['mean_h1_A1_'][m] = []
@@ -781,11 +781,11 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
 
             for x in range(0, npoints):
                 normtime = start1 + duration * x / npoints
-                #print("normtime", normtime)
+
                 f1 = pm.praat.call(Formant_name, "Get value at time", 1, normtime, "Hertz", "Linear")      
                 f2 = pm.praat.call(Formant_name, "Get value at time", 2, normtime, "Hertz", "Linear") 
                 f3 = pm.praat.call(Formant_name, "Get value at time", 3, normtime, "Hertz", "Linear") 
-                #print(f1, f3)
+
                 if end - normtime < 0.125:
                     window_start = end - 0.25
                 else:
@@ -794,20 +794,16 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                     window_end = start1 + 0.25
                 else:
                     window_end = normtime + 0.125     
-                #print(window_start, window_end, start1, end)
                 Sound_name_part = pm.praat.call(Sound_name, "Extract part", window_start, window_end, "Rectangular", 1, "yes")
                 Spectrum_name_part = pm.praat.call(Sound_name_part, "To Spectrum", "yes")
                 PowerCepstrum_name_part = pm.praat.call(Spectrum_name_part, "To PowerCepstrum")
-                cpp = pm.praat.call(PowerCepstrum_name_part, "Get peak prominence", 60, 333.3, "none", 0.001, 0.05, "Exponential decay", "Robust slow")
-                #cpp = pm.praat.call(PowerCepstrum_name_part, "Get peak", 60, 333.3, "Parabolic")
-                #print(window_start, window_end, cpp)
+                cpp = pm.praat.call(PowerCepstrum_name_part, "Get peak prominence", 60, 333.3, "Parabolic", 0.001, 0.05, "Exponential decay", "Robust slow")
                 SpectrumTier_name_part = pm.praat.call(Spectrum_name_part, "To SpectrumTier (peaks)")
                 Table_name_part =  pm.praat.call(SpectrumTier_name_part, "Down to Table")
                 nrows = pm.praat.call(Table_name_part, "Get number of rows")
                 frequency_step = nrows / sf
                 f = float(pm.praat.call(Table_name_part, "Get value", 1, "freq(Hz)"))
                 row = 1
-                #print(f, f0)
                 while f < f0:
                     row += 1
                     f = float(pm.praat.call(Table_name_part, "Get value", row, "freq(Hz)"))
@@ -817,10 +813,10 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                     if r < 1:
                         r1 = 1
                     a = float(pm.praat.call(Table_name_part, "Get value", r1, "pow(dB/Hz)"))
-                    #print("first", r, r1, a)
+
                     if a > h1:
                         h1 = a
-                        #freq = pm.praat.call(Table_name_part, "Get value", r, "freq(Hz)")
+
                 while f < f0 * 2:
                     row += 1
                     f = float(pm.praat.call(Table_name_part, "Get value", row, "freq(Hz)"))
@@ -830,7 +826,7 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                     if r < 1:
                         r1 = 1
                     a = float(pm.praat.call(Table_name_part, "Get value", r1, "pow(dB/Hz)"))
-                    #print("second", r, r1, a)
+
                     if a > h2:
                         h2 = a
                         
@@ -848,14 +844,12 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                         if r < 1:
                             r1 = 1
                         a = float(pm.praat.call(Table_name_part, "Get value", r1, "pow(dB/Hz)"))
-                        #print("third", r, r1, a)
                         if a > a1:
                             a1 = a
                     h1_A1 = h1 - a1
                 else:
-                    h1_A1 = math.nan #1033
+                    h1_A1 = math.nan
 
-                #print(f, f0, h1_A1)
                 
                 if not math.isnan(f3):
                     while f < f3:
@@ -867,12 +861,11 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                         if r > 1:
                             r1 = 1
                         a = float(pm.praat.call(Table_name_part, "Get value", r1, "pow(dB/Hz)"))
-                        #print("fourth", r, r1, a)
                         if a > a3:
                             a3 = a
                     h1_A3 = h1 - a3
                 else:
-                    h1_A3 = math.nan #1052
+                    h1_A3 = math.nan  
 
                 h1_h2 = h1 - h2
                 h = {1:h1, 2:h2}
@@ -880,7 +873,6 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
                 h1_H2 = h[1] - h[2]
 
                 nrows = pm.praat.call(TableOfReal_normtimeVoice, "Get number of rows")
-                #print(normtime, firstime)
                 pm.praat.call(TableOfReal_normtimeVoice, "Set numeric value", nrows, colnames[2], normtime)
                 if set_initial_normalized_time_to_0:
                     pm.praat.call(TableOfReal_normtimeVoice, "Set numeric value", nrows, colnames[2], normtime-firstime)
@@ -1026,14 +1018,15 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
         energytitle = "Energy_Profile__" + str(energy_band_step_size)+  "Hz"
         center = energy_band_step_size
         for band in range(1,16):
-            energytitle = energytitle + '\t' + str(center)
+            energytitle = energytitle + '\t' + str(round(center))
+            center += 0.5*energy_band_size
         titleline = name + '\th1-h2\th1*-h2*\tH1-A1\tH1-A3\tcpp\tcenter_of_gravity\tHammarberg_index\tenergy_below_500Hz\t'
         titleline = titleline + 'energy_below_1000Hz\tF_dispersion1_3\tF_dispersion1_5\tmedian_pitch\tjitter\tshimmer\tharmonicity\t' + energytitle
         if len(other_tiers) > 0:
             for other_tier in other_tiers:
                 tier_label = pm.praat.call(TextGrid_name, "Get tier name", other_tier)
                 titleline = titleline + '\t' + tier_label
-        
+            center += 0.5*energy_band_size
         
         BID_outfile = open(os.path.join(directory, name + '.BID'), 'w', encoding = 'utf-8')
         BID_outfile.write(titleline + '\n')
@@ -1043,7 +1036,6 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
         if label not in empty_intevals or n_intervals == 1:
-            #print("means", m)
             interval = interval + 1
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length      
@@ -1114,11 +1106,14 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
             start1 = start + perturbation_length      
             Table_means = Fill_other_tier_columns(Table_means, TextGrid_name, start1, interval, colnames)
 
-    BID_outfile.close()
+    if get_BID_measures:
+        BID_outfile.close()
     
     return TableOfReal_means, Table_means
 
 def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
+   
+    voice_dict = {}
    
     nintervals = pm.praat.call(TextGrid_name, "Get number of intervals", target_tier)
     for m in range(1, nintervals+1):
