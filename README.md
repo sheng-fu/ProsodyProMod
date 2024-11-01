@@ -12,8 +12,11 @@ Xu, Y. (2013). ProsodyPro — A Tool for Large-scale Systematic Prosody Analysis
 
 ## Python version (ProsodyProMod.py)
 
-Implementation of the "Process all sounds without pause" option in the original script
-(via the [Parselmouth](https://parselmouth.readthedocs.io/en/stable/) library)
+Implementation of the "Process all sounds without pause" option in the original script <br>
+
++ Required libraries
+  + praat-parselmouth ([link](https://parselmouth.readthedocs.io/en/stable/))
+  + numpy
 
 ### Example Usage
 ```
