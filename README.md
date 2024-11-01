@@ -30,7 +30,6 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
   + .means (as .meansMoreTiers)
   + .BID
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
-+ .BID files now also saved to the folder selected via Choose_working_folder
 
 ### Notes
 + means of voice measurements are taken by ignoring undefined values
