@@ -259,7 +259,7 @@ def Normalization(Pitchtier_1, TextGrid_name, name1 = "name1", name2 = "name2"):
     for m in range(1,nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
 
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length
             end = pm.praat.call(TextGrid_name, "Get end point", target_tier, m)
@@ -462,7 +462,7 @@ def Sampling(PitchTier_name, TextGrid_name):
     hassampleStart = 0
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
-        if label not in empty_intevals or nintrevals == 1:
+        if label not in empty_intevals or nintervals == 1:
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length
             if start1-last_sample_time < 1/f0_sample_rate:
@@ -519,7 +519,7 @@ def Differentiation(PitchTier_in_contour, TableOfReal_in_contour, npulses, Table
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
 
-        if label not in empty_intevals or nintrevals == 1:
+        if label not in empty_intevals or nintervals == 1:
             start1 = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             end = pm.praat.call(TextGrid_name, "Get end point", target_tier, m)
 
@@ -583,7 +583,7 @@ def Intensity_normalization(TextGrid_name, Sound_name):
     nrows = 0
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length         
             firstime = start1
@@ -760,7 +760,7 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
     nrows = 0
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)        
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length      
             end = pm.praat.call(TextGrid_name, "Get end point", target_tier, m)
@@ -1035,7 +1035,7 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
     interval = 0
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             interval = interval + 1
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length      
@@ -1100,7 +1100,7 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
     interval = 0
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             interval += 1
             start = pm.praat.call(TextGrid_name, "Get starting point", target_tier, m)
             start1 = start + perturbation_length      
@@ -1110,6 +1110,17 @@ def Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_d
         BID_outfile.close()
     
     return TableOfReal_means, Table_means
+    
+def to_utf8(path):
+    try:
+        with open(path, "r", encoding = 'utf-16') as file:
+            data = file.read()
+        with open(path, "w", encoding = 'utf-8') as file:
+            file.write(data)
+    except:
+        None
+    return 0
+
 
 def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
    
@@ -1119,7 +1130,7 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
     for m in range(1, nintervals+1):
         label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
 
-        if label not in empty_intevals or n_intervals == 1:
+        if label not in empty_intevals or nintervals == 1:
             found_interval = True
     if save_output_files:
         npulses = pm.praat.call(PointProcess_name, "Get number of points")
@@ -1169,11 +1180,7 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
             pm.praat.call(TableOfReal_samplef0, "Write to headerless spreadsheet file", os.path.join(directory, name + '.samplef0'))
             pm.praat.call(TableOfReal_velocity, "Write to headerless spreadsheet file", os.path.join(directory, name + '.f0velocity'))
 
-            PitchTier_acceleration, TableOfReal_acceleration, TableOfReal_velocity, TableOfReal_smoothf0 = Differentiation(PitchTier_velocity, 
-                                                                                                                             TableOfReal_velocity,
-                                                                                                                     npulses, TableOfReal_smoothf0,
-                                                                                                                            sampleStart, sampleEnd,
-                                                                                                                            TextGrid_name)
+            PitchTier_acceleration, TableOfReal_acceleration, TableOfReal_velocity, TableOfReal_smoothf0 = Differentiation(PitchTier_velocity, TableOfReal_velocity, npulses, TableOfReal_smoothf0, sampleStart, sampleEnd, TextGrid_name)
             
             pm.praat.call(TableOfReal_acceleration, "Write to headerless spreadsheet file", os.path.join(directory, name + '.accelerationf0'))
             pm.praat.call(TableOfReal_semitonef0, "Write to headerless spreadsheet file", os.path.join(directory, name + '.semitonef0'))
@@ -1192,22 +1199,42 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
 
         if found_interval:
             pm.praat.call(TableOfReal_normf0, "Save as tab-separated file", os.path.join(directory, name + '.normtimef0'))
+            to_utf8(os.path.join(directory, name + '.normtime_semitonef0'))
+            
             pm.praat.call(TableOfReal_normtime_semitonef0, "Save as tab-separated file", os.path.join(directory, name + '.normtime_semitonef0'))
+            to_utf8(os.path.join(directory, name + '.normtime_semitonef0'))
+            
             pm.praat.call(TableOfReal_normtime_f0velocity, "Save as tab-separated file", os.path.join(directory, name + '.normtime_f0velocity'))
+            to_utf8(os.path.join(directory, name + '.normtime_f0velocity'))
+            
             pm.praat.call(TableOfReal_normtime_f0acceleration, "Save as tab-separated file", os.path.join(directory, name + '.normtime_f0acceleration'))
+            to_utf8(os.path.join(directory, name + '.normtime_f0acceleration'))
+            
             pm.praat.call(TableOfReal_normactuf0, "Save as tab-separated file", os.path.join(directory, name + '.actutimenormf0'))
+            to_utf8(os.path.join(directory, name + '.actutimenormf0'))
+            
             pm.praat.call(TableOfReal_normactutime_semitonef0, "Save as tab-separated file", os.path.join(directory, name + '.actutimesemitonef0'))
+            to_utf8(os.path.join(directory, name + '.actutimesemitonef0'))            
+            
             pm.praat.call(TableOfReal_normtime_f0velocity, "Save as tab-separated file", os.path.join(directory, name + '.actutimef0velocity'))
+            to_utf8(os.path.join(directory, name + '.actutimef0velocity'))                  
+            
             pm.praat.call(TableOfReal_normtime_f0acceleration, "Save as tab-separated file", os.path.join(directory, name + '.actutimef0acceleration'))
+            to_utf8(os.path.join(directory, name + '.actutimef0acceleration'))   
+            
             pm.praat.call(TableOfReal_normtimeIntensity, "Save as tab-separated file", os.path.join(directory, name + '.normtimeIntensity'))
+            to_utf8(os.path.join(directory, name + '.normtimeIntensity'))               
+            
             if get_BID_measures:
                 pm.praat.call(TableOfReal_normtimeVoice, "Save as tab-separated file", os.path.join(directory, name + '.normtimeVoice'))
+                to_utf8(os.path.join(directory, name + '.normtimeVoice'))    
 
         
 
         TableOfReal_means, Table_means = Means(Sound_name, TextGrid_name, PitchTier_name, PitchTier_velocity, voice_dict)
         pm.praat.call(TableOfReal_means, "Write to headerless spreadsheet file", os.path.join(directory, name + '.means'))
         pm.praat.call(Table_means, "Save as tab-separated file", os.path.join(directory, name + '.meansMoreTiers'))
+        to_utf8(os.path.join(directory, name + '.meansMoreTiers'))   
 
 
         
