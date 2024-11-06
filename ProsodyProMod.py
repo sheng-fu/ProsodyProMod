@@ -49,6 +49,8 @@ parser.add_argument('-silence_marker', action="store", dest="silence_marker", de
 parser.add_argument('-perturbation_length', action="store", dest="perturbation_length", default = 0.0, type=float)
 parser.add_argument('-final_offset', action="store", dest="final_offset", default = -0.03, type=float)
 parser.add_argument('-smoothing_window_width', action="store", dest="smoothing_window_width", default = 0.07, type=float)
+parser.add_argument('-trim_if_bump_above_Hz', action="store", dest="trim_if_bump_above_Hz", default = 0.01, type=float)
+
 
 parser.add_argument('-set_initial_normalized_time_to_0', action="store", dest="set_initial_normalized_time_to_0", default = 1, type=int)
 
@@ -85,6 +87,7 @@ silence_marker = args.silence_marker
 perturbation_length = args.perturbation_length  
 final_offset = args.final_offset 
 smoothing_window_width = args.smoothing_window_width  
+trim_if_bump_above_Hz = args.trim_if_bump_above_Hz
 set_initial_normalized_time_to_0 = args.set_initial_normalized_time_to_0 
 capture_consonant_perturbation = args.capture_consonant_perturbation  
 
@@ -345,7 +348,7 @@ def Trim(PitchTier_name, n, maxbump, maxedge, maxgap):
 
 
 def Trimf0(PitchTier_name, npulses):
-    maxbump = 0.01 
+    maxbump = trim_if_bump_above_Hz
     maxedge = 0.0
     maxgap = 0.033
     n = pm.praat.call(PitchTier_name, "Get number of points")
@@ -907,7 +910,7 @@ def Voice_normalization(TextGrid_name, Sound_name, PitchTier_name, normtime, nam
     return TableOfReal_normtimeVoice, voice_dict
 
 def Trimformants(FormantTier_name):
-    maxbump = 0.01  
+    maxbump = trim_if_bump_above_Hz 
     maxedge = 0.0
     maxgap = 0.033
     n = pm.praat.call(FormantTier_name, "Get number of points")
