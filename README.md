@@ -30,7 +30,7 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
   + .means (as .meansMoreTiers)
   + .BID
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
-+ Added an option to adjust threshold for trimming F0 and formants (```-trim_if_bump_above_Hz```); defaults to 0.01 as the variable 'maxbump' in the original script
++ Added an option to adjust the threshold for trimming F0 and formants (```-trim_if_bump_above_Hz```); defaults to 0.01 as the variable 'maxbump' in the original script
 + Means of voice measurements are calculated by ignoring undefined values
 
 ### Notes
@@ -45,7 +45,7 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 ### Modifications 
 
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
-+ Added an option to adjust threshold for trimming F0 and formants, i.e., the "maxbump" parameter in the original script (in "trim_if_bump_above_Hz" in extra_options); defaults to 0.01 as the variable 'maxbump' in the original script
++ Added an option to adjust the threshold for trimming F0 and formants (in "trim_if_bump_above_Hz" in extra_options); defaults to 0.01 as the variable 'maxbump' in the original script
 + .BID and “Get ensemble files” outputs are saved to the selected folder when ```Choose_working_folder = 1```
 + Outputs of “Average across speakers” are saved to specified folders 
 
