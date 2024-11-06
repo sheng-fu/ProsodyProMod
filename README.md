@@ -44,7 +44,9 @@ python ProsodyProMod.py -directory DIRECTORY -target_tier 1 -get_BID_measures 1 
 ### Modifications 
 
 + Added raw formant measurements (F1, F2, F3) to .normtimeVoice
-+ .BID files are saved to the selected folder when ```Choose_working_folder = 1```
++ .BID and “Get ensemble files” outputs are saved to the selected folder when ```Choose_working_folder = 1```
++ Outputs of “Average across speakers” are saved to specified folders 
+
 
 
 

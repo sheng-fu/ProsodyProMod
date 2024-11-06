@@ -1199,7 +1199,7 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
 
         if found_interval:
             pm.praat.call(TableOfReal_normf0, "Save as tab-separated file", os.path.join(directory, name + '.normtimef0'))
-            to_utf8(os.path.join(directory, name + '.normtime_semitonef0'))
+            to_utf8(os.path.join(directory, name + '.normtimef0'))
             
             pm.praat.call(TableOfReal_normtime_semitonef0, "Save as tab-separated file", os.path.join(directory, name + '.normtime_semitonef0'))
             to_utf8(os.path.join(directory, name + '.normtime_semitonef0'))
