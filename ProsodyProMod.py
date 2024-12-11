@@ -25,6 +25,7 @@ import argparse
 parser = argparse.ArgumentParser(description='')
 
 parser.add_argument('-directory', action="store", dest="directory", default = './', type=str)
+parser.add_argument('-simple', action="store", dest="simple", default = 0, type=int)
 
 
 parser.add_argument('-target_tier', action="store", dest="target_tier", default = 1, type=int)
@@ -1141,7 +1142,7 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
             time1 = pm.praat.call(PointProcess_name, "Get time from index", n-1)
             time2 = pm.praat.call(PointProcess_name, "Get time from index", n)
             if time2 - time1 < 0.001:
-                pm.praat.call(PointProcess, "Remove point", n)
+                pm.praat.call(PointProcess_name, "Remove point", n)
         pm.praat.call(PointProcess_name, "Write to short text file", os.path.join(directory, name + '.pulse'))
 
         maxperiod = 0.02
@@ -1240,11 +1241,47 @@ def save(directory, name, Sound_name, TextGrid_name, PointProcess_name):
         to_utf8(os.path.join(directory, name + '.meansMoreTiers'))   
 
 
-        
+def save_simple(directory, name, Sound_name, TextGrid_name, PointProcess_name):
+   
+    voice_dict = {}
+   
+    nintervals = pm.praat.call(TextGrid_name, "Get number of intervals", target_tier)
+    for m in range(1, nintervals+1):
+        label = pm.praat.call(TextGrid_name, "Get label of interval", target_tier, m)
+
+        if label not in empty_intevals or nintervals == 1:
+            found_interval = True
+    if save_output_files:
+        npulses = pm.praat.call(PointProcess_name, "Get number of points")
+        for n in range(2,npulses):
+            time1 = pm.praat.call(PointProcess_name, "Get time from index", n-1)
+            time2 = pm.praat.call(PointProcess_name, "Get time from index", n)
+            if time2 - time1 < 0.001:
+                pm.praat.call(PointProcess_name, "Remove point", n)
+        pm.praat.call(PointProcess_name, "Write to short text file", os.path.join(directory, name + '.pulse'))
+
+        maxperiod = 0.02
+        PitchTier_name = pm.praat.call(PointProcess_name, "To PitchTier", 0.02)
+        if npulses > 1:
+            TableOfReal = pm.praat.call(PitchTier_name, "Down to TableOfReal", "Hertz")
+            pm.praat.call(TableOfReal, "Write to headerless spreadsheet file", os.path.join(directory, name + '.rawf0'))
+        else:
+            print("file needs to have more than three pulse marks")   
+
+
+        PitchTier_name = Trimf0(PitchTier_name, npulses)
+        pm.praat.call(PitchTier_name, "Write to short text file", os.path.join(directory, name + '.PitchTier'))
+        TableOfReal = pm.praat.call(PitchTier_name, "Down to TableOfReal", "Hertz")
+        pm.praat.call(TableOfReal, "Write to headerless spreadsheet file", os.path.join(directory, name + '.f0'))    
+
+      
 
 
 
 for wav_file in soundfiles:
     name, Sound_name, TextGrid_name, PointProcess_name = Labeling(directory, wav_file)
     print("processing " + name + " now...")
-    save(directory, name, Sound_name, TextGrid_name, PointProcess_name)
+    if args.simple:
+        save_simple(directory, name, Sound_name, TextGrid_name, PointProcess_name)
+    else:    
+        save(directory, name, Sound_name, TextGrid_name, PointProcess_name)
